@@ -6,7 +6,8 @@ from queue import Queue
 import serial
 import ui_TZD
 import numpy as np
-class TZDUIWIDGET (QDialog, ui_TZD.Ui_Form):
+
+class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 	def __init__(self, parent=None):
 		super(TZDUIWIDGET,self).__init__(parent)
 		self.setupUi(self)
@@ -14,53 +15,86 @@ class TZDUIWIDGET (QDialog, ui_TZD.Ui_Form):
 		self.byte_queue = Queue()
 		self.results = Queue()
 		self.adcs = Queue()
-		self.running = False
+		self._running = False
+		self.sen_dict = {}
+		self.cal_dict = {}
+		self.list_adcs = []
+		self.list_adcs0 = []
+		self.adcs0 = {}
+			for ii in range(0,12):
+				self.adcs0[ii] = 0
 		try:
-			self.ser.port = 'COM1'
+			self.ser.port = 'COM2'
 			self.ser.open()
 			if self.ser.isOpen:
-				self.comboBox.addItem("1")
+				self.comboBox.addItem("2")
 		except serial.serialutil.SerialException:
 			pass
 
 		self.timer = QTimer()		
 		self.timer.timeout.connect(self.onTimer)
-		self.btnReceive.clicked.connect(self.begin)
-		self.btnEnd.clicked.connect(self.endHandler)
-		#test 
+		self.btnReceive.clicked.connect(self.on_btn_begin)
+		self.btnEnd.clicked.connect(self.on_btn_end)
+		self.btnSetParameters.clicked.connect(self.set_parameters)
+		self.btnZero.clicked.connect(self.on_btn_zeros)
 		self.index = 0
-	def begin(self):
-		
-		
+	def on_btn_begin(self):
 		self.timer.start(50)
-		# self.running = True
-		# thread1 = Thread(target = self.read_from_serial,args=(self.byte_queue,))
-		# thread1.start()
-		# thread2 = Thread(target = self.find_effective_data,args=(self.byte_queue,self.results,))
-		# thread2.start()
-		# thread3 = Thread(target = self.data_process,args=(self.results,self.adcs))
-		# thread3.start()
-	def endHandler(self):
-		self.timer.stop()
-		#self.ser.close()
+		self._running = 1
+		thread1 = Thread(target = self.read_from_serial,args=(self.byte_queue,))
+		thread1.start()
+		thread2 = Thread(target = self.find_effective_data,args=(self.byte_queue,self.results,))
+		thread2.start()
+		thread3 = Thread(target = self.data_process,args=(self.results,self.adcs))
+		thread3.start()
 	
-	def onTimer(self):
-		# size = self.adcs.qsize()
-		# for i in range(0,size):
-			# self.adcs.get()
-		self.index += 1
-		line1 = []
-		line2 = []
-		line3 = []
-		for ii in range(self.index):
-			line1.append(ii * 2 + np.random.randn())
-			line2.append(ii * 3 + np.random.randn())
-			line3.append(ii * 4 + np.random.randn())
-		self.widget.set_lines(line1,line2,line3)
+	def on_btn_zeros(self):
+		self.timer.start(50)
+		self._running = 2
+		thread1 = Thread(target = self.read_from_serial,args=(self.byte_queue,))
+		thread1.start()
+		thread2 = Thread(target = self.find_effective_data,args=(self.byte_queue,self.results,))
+		thread2.start()
+		thread3 = Thread(target = self.data_process,args=(self.results,self.adcs))
+		thread3.start()
+		
+	def on_btn_end(self):
+		import copy
+		self.timer.stop()
+		self.ser.close()
+		
 			
+		self._running = 0
+		
+	def onTimer(self):
+		size = self.adcs.qsize()
+		for i in range(0,size):
+			self.list_adcs.append(self.adcs.get())
+			
+		if self._running == 2:
+			self.list_adcs0 = copy.deepcopy(self.list_adcs) 
+			self.list_adcs.clear()
+			for ii in range(0,len(self.list_adcs0)):
+				for jj in range(0,12):
+					self.adcs[jj] += self.list_adcs0[ii][jj]
+			for jj in range(0,12):
+				self.adcs0[jj] /= len(self.list_adcs0)
+		else if self._running == 1:
+			for ii in range(0,len(self.list_adcs)):
+				for jj in range(0,12):
+					pass
+		# self.index += 1
+		# line1 = []
+		# line2 = []
+		# line3 = []
+		# for ii in range(self.index):
+			# line1.append(ii * 2 + np.random.randn())
+			# line2.append(ii * 3 + np.random.randn())
+			# line3.append(ii * 4 + np.random.randn())
+		# self.widget.set_lines(line1,line2,line3)
 		
 	def read_from_serial(self,out_q):
-		while self.running:
+		while self._running != 0:
 			b = self.ser.read()
 			out_q.put(b)
 		
@@ -115,7 +149,16 @@ class TZDUIWIDGET (QDialog, ui_TZD.Ui_Form):
 		out_q3.put(adcs)
 		in_q2.task_done()
 			
-			
+	def set_parameters(self):
+		from set_parameters import Set_Parameters_Dialog
+		dlg = Set_Parameters_Dialog(parent = self)
+		
+		if dlg.exec_():
+			self.sen_dict = dlg.sen_dict
+			self.cal_dict = dlg.cal_dict
+		dlg.destroy()
+		print (self.sen_dict)
+		print (self.cal_dict)
 			
 				
 				

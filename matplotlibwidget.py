@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 class MplCanvas(FigureCanvas):
 	def __init__(self):
 		self.fig = plt.figure()
-		self.flatax = self.fig.add_axes([0.1,0.1,1,1])
+		self.flatax = self.fig.add_axes([0.1,0.1,0.8,0.8])
 		self.flatax.set_xlabel("time")
 		self.flatax.set_ylabel("flatness")
 		self.flatax.grid(True)
