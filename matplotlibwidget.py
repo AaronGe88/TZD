@@ -7,12 +7,12 @@ import matplotlib.pyplot as plt
 class MplCanvas(FigureCanvas):
 	def __init__(self):
 		self.fig = plt.figure()
-		self.flatax = self.fig.add_axes([0.1,0.1,0.8,0.8])
-		self.flatax.set_xlabel("time")
+		self.flatax = self.fig.add_axes([0.12,0.1,0.8,0.8])
+		self.flatax.set_xlabel("Force(KN)")
 		self.flatax.set_ylabel("flatness")
 		self.flatax.grid(True)
 		self.flatax.set_ylim([0, 200])  
-		self.flatax.set_xlim([0, 200]) 
+		self.flatax.set_xlim([0, 50]) 
 		FigureCanvas.__init__(self, self.fig)
 		FigureCanvas.setSizePolicy(self, QSizePolicy.Expanding,QSizePolicy.Expanding)
 		FigureCanvas.updateGeometry(self)

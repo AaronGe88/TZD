@@ -6,92 +6,136 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1018</width>
-    <height>567</height>
+    <width>1317</width>
+    <height>652</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="MatplotlibWidget" name="widget" native="true">
+  <widget class="QWidget" name="gridLayoutWidget_4">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>150</y>
-     <width>621</width>
-     <height>271</height>
+     <y>20</y>
+     <width>1281</width>
+     <height>511</height>
     </rect>
    </property>
-  </widget>
-  <widget class="QWidget" name="gridLayoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>10</y>
-     <width>361</width>
-     <height>121</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0">
-     <widget class="QPushButton" name="btnReceive">
-      <property name="text">
-       <string>开始测量</string>
+   <layout class="QGridLayout" name="gridLayout_4">
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>10</number>
+    </property>
+    <item row="0" column="1">
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
       </property>
-     </widget>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="3">
+     <spacer name="horizontalSpacer_3">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="0">
+     <widget class="QTableView" name="tableView_force"/>
     </item>
     <item row="0" column="0">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>COM</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QComboBox" name="comboBox"/>
-    </item>
-    <item row="1" column="1">
-     <widget class="QPushButton" name="btnEnd">
-      <property name="text">
-       <string>结束测量</string>
-      </property>
-     </widget>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>COM</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="comboBox"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnSetParameters">
+        <property name="text">
+         <string>设置参数</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item row="2" column="0">
-     <widget class="QPushButton" name="btnZero">
-      <property name="text">
-       <string>设置零点数据</string>
-      </property>
-     </widget>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="1">
+       <widget class="QPushButton" name="btn_delete_force">
+        <property name="text">
+         <string>删除</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QPushButton" name="btn_apply_force">
+        <property name="text">
+         <string>应用</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QPushButton" name="btn_add_force">
+        <property name="text">
+         <string>添加</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QPushButton" name="btnEnd">
+        <property name="text">
+         <string>结束测量</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="btnReceive">
+        <property name="text">
+         <string>开始测量</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="btnSave">
+        <property name="text">
+         <string>保存数据</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
-    <item row="2" column="1">
-     <widget class="QPushButton" name="btnSave">
-      <property name="text">
-       <string>保存数据</string>
-      </property>
-     </widget>
+    <item row="0" column="2">
+     <layout class="QGridLayout" name="gridLayout_2"/>
     </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="gridLayoutWidget_2">
-   <property name="geometry">
-    <rect>
-     <x>410</x>
-     <y>10</y>
-     <width>160</width>
-     <height>80</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0">
-     <widget class="QPushButton" name="btnSetParameters">
-      <property name="text">
-       <string>设置参数</string>
-      </property>
-     </widget>
+    <item row="1" column="3">
+     <widget class="MatplotlibWidget" name="widget_flatten" native="true"/>
+    </item>
+    <item row="1" column="1">
+     <widget class="StrainPlotWidget" name="widget_strain" native="true"/>
     </item>
    </layout>
   </widget>
@@ -101,6 +145,12 @@
    <class>MatplotlibWidget</class>
    <extends>QWidget</extends>
    <header>matplotlibwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>StrainPlotWidget</class>
+   <extends>QWidget</extends>
+   <header>strainplotwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
