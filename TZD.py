@@ -1,3 +1,4 @@
+# coding=utf-8
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -43,7 +44,7 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 		
 		self.forces =  QStandardItemModel(self.tableView_force)
 		self.forces.setColumnCount(2)
-		#self.forces.setHeaderData(0,Qt.Horizontal,u"排序")  
+	 
 		self.forces.setHeaderData(0,Qt.Horizontal,u"拉力(KN) 0") 
 		self.forces.setHeaderData(1,Qt.Horizontal,u"拉力(KN) 180")
 		self.tableView_force.setSelectionBehavior(QAbstractItemView.SelectRows);
@@ -67,13 +68,14 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 		except TypeError as e:
 			self.forces.setItem(0,0,QStandardItem("0"))
 			msbox = QMessageBox(QMessageBox.Warning,u"警告",str(e), QMessageBox.Cancel);  
-			msbox.exec_()  
+			msbox.exec_()
+			msbox.destroy()
 			
-			
+		self.index_row = 0
 		self.index_force = 0.0
 		self.index_angle = 0
-		
-		
+		self.textBrowser_info.setText(u"请首先应用拉力测试数据")
+	
 	def read_forces(self):
 		import csv
 		try:
@@ -105,23 +107,29 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 		#0 和 180度 应变值
 		self.strains_0degree = np.zeros([self.array_forces.size,12],dtype = np.float64)
 		self.strains_180degree = np.zeros([self.array_forces.size,12],dtype = np.float64)
-		
+		self.btn_apply_force.setFocus(Qt.MouseFocusReason)
+		self.textBrowser_info.setText(u"数据确认成功")
 			
 	def on_btn_begin(self):
-			
+	
 		selection = self.tableView_force.selectionModel()
 		#selected = selection.selectedIndexes()
 		index = selection.currentIndex();
-		print(index)
 		try:
+			self.index_row = index.row()
 			self.index_force = float(self.forces.item(index.row(),index.column()).text())
 			self.index_angle = 0 if index.column() == 0 else 180
 			
-		
 		except IndexError as e:
-			msbox = QMessageBox(QMessageBox.Warning,u"警告",u"请选择拉力", QMessageBox.Cancel);  
-			msbox.exec_()  
+			#msbox = QMessageBox(QMessageBox.Warning,u"警告",u"请选择拉力", QMessageBox.Cancel);  
+			#msbox.exec_()  
+			self.textBrowser_info.setText(u"请选择拉力")
 		else:
+			#提示当前测量数据
+			str_tip = "当前拉力: {0}, 测量角度： {1}".format(self.index_force,self.index_angle)
+			#uni_tip = str_tip.encode("utf-8")
+			self.textBrowser_info.setText(str_tip)
+			
 			#u"打开串口"
 			if not self.ser.isOpen():
 				self.ser.open()
@@ -143,7 +151,6 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 			thread2.start()
 				#thread3 = Thread(target = self.data_process,args=(self.results,self.adcs))
 			thread3.start()
-			print('begin1',self.index_force,self.index_angle)
 			self.is_zero = True
 		
 
@@ -152,17 +159,40 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 		try:
 			self.ser.close()
 			self.timer.stop()
-			print(self.index_force)
-			if self.index_force == 0.0:
-				self.mean_adcs0 = np.mean(self.cur_adcs,axis = 0)
-				if np.isnan(self.mean_adcs0):
-					msbox = QMessageBox(QMessageBox.Warning,u"警告",u"串口无信号/t请结束测量检测串口", QMessageBox.Cancel);  
-					msbox.exec_()
-					print(self.mean_adcs0)
 		except Exception as e:
 			print(str(e),139)
 		else:
-			print('stop')
+			self.textBrowser_info.setText(u"串口已关闭！\n计时器已关闭")
+		if self.index_force == 0.0:
+			self.mean_adcs0 = np.mean(self.cur_adcs,axis = 0) 
+				#print(self.mean_adcs0)
+			try:
+				if np.isnan(self.mean_adcs0):
+						#msbox = QMessageBox(QMessageBox.Warning,u"警告",u"", QMessageBox.Cancel);  
+						#msbox.exec_()
+						#print(self.mean_adcs0)
+					self.textBrowser_info.setText(u"串口无信号\n请结束测量检测串口")
+			except ValueError as e:
+				self.textBrowser_info.setText(u"串口连接正常")
+				if not np.isnan(self.mean_adcs0.any()):
+					str_tip = "".join([u"0点设置成功\n",str(self.mean_adcs0)])
+					self.textBrowser_info.setText(str_tip)
+		else:
+			try:
+				mean_strain = np.mean(self.this_strain,axis = 0)
+				
+				if self.index_angle == .0:
+					self.strains_0degree[self.index_row,:] = mean_strain
+					tip = "".join([u"测试成功\n",str(self.strains_0degree)])
+				else:
+					self.strains_180degree[self.index_row,:] = mean_strain
+					tip = "".join([u"测试成功\n",str(self.strains_180degree)])
+				self.textBrowser_info.setText(tip)
+			except AttributeError as e:
+				self.textBrowser_info.setText(u"请先点击应用")
+				self.textBrowser_info.setText(str(e))
+				
+				
 		
 		
 			
@@ -184,33 +214,35 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 				self.cur_adcs = np.concatenate((self.cur_adcs,array_adcs),axis = 0)
 				#print(self.all_adcs)
 		except Exception as e:
-			print(e,163)
+			self.textBrowser_info.setText(str(e))
+			
 		if self.index_force != 0.0:
 			try:
 				self.cur_adcs_minused = self.cur_adcs - self.mean_adcs0
+				#print(self.mean_adcs0)
 				#print(self.all_adcs_minused.shape)
 			except ValueError as e:
-				print(e)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				#msbox = QMessageBox(QMessageBox.Warning,u"警告",u"串口无信号/t请结束测量检测串口", QMessageBox.Cancel);  
 				#msbox.exec_()  
 				#self.on_btn_end()
+				self.textBrowser_info.setText(u"串口无信号\n请结束测量检测串口")
 			except AttributeError as e:
-				print(e)
+				#print(e)
 				#msbox = QMessageBox(QMessageBox.Warning,u"警告",u"请首先测试0拉力", QMessageBox.Cancel);  
 				#msbox.exec_() 
 				#self.on_btn_end()
-				
+				self.textBrowser_info.setText(u"请首先测试0拉力")
 				
 			if self.sense.size == 12 and self.rcal.size ==12 :
 				try:
-					this_strain = self.cur_adcs_minused / self.rcal / self.sense
-					self.plot_strains(this_strain)
-					mean_strain = np.mean(this_strain,axis = 0)
-					print(self.mean_strain)
+					self.this_strain = self.cur_adcs_minused / self.rcal / self.sense
+					self.plot_strains(self.this_strain)
 				except AttributeError as e:
-					print(e)
+					tip = "".join([u"请首先测试0拉力\n",str(e)])
+					self.textBrowser_info.setText(tip)
 				except ValueError as e:
-					print(e)
+					self.textBrowser_info.setText(str(e))
+			
 				
 		
 	def plot_strains(self,strain):
@@ -264,7 +296,6 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 			#print(n)
 			#print(data[40])
 			if data[40] != n:
-				print('data error 1')
 				continue
 			j = 0
 			for i in range(1,38):
@@ -272,7 +303,7 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 			t = data[39]
 			t = t * 256 + data[38]
 			if t != j :
-				print(t,'-',j)
+				#print(t,'-',j)
 				continue
 			
 			adcs = []

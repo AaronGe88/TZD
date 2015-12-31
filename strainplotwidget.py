@@ -37,7 +37,7 @@ class MplCanvas(FigureCanvas):
 		
 	def set_lines(self,args):
 		if len(args == 1):
-			print(args.shape)
+			#print(args.shape)
 			xval = args.shape[0]
 			self.flat0.set_xdata(range(xval))
 			self.flat0.set_ydata(args[:,0])

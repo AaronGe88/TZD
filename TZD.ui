@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>拉伸机同轴度测量系统</string>
   </property>
   <widget class="QWidget" name="gridLayoutWidget_4">
    <property name="geometry">
@@ -93,6 +93,12 @@
       </item>
       <item row="1" column="0">
        <widget class="QPushButton" name="btn_apply_force">
+        <property name="statusTip">
+         <string>开始前先点击应用</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 0);</string>
+        </property>
         <property name="text">
          <string>应用</string>
         </property>
@@ -135,9 +141,23 @@
      <widget class="MatplotlibWidget" name="widget_flatten" native="true"/>
     </item>
     <item row="1" column="1">
-     <widget class="StrainPlotWidget" name="widget_strain" native="true"/>
+     <widget class="StrainPlotWidget" name="widget_strain" native="true">
+      <property name="whatsThis">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;开始测量过程前先点击应用确认测量数据&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QTextBrowser" name="textBrowser_info">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>550</y>
+     <width>1281</width>
+     <height>71</height>
+    </rect>
+   </property>
   </widget>
  </widget>
  <customwidgets>

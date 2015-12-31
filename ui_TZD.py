@@ -44,6 +44,7 @@ class Ui_Form(object):
         self.btn_delete_force.setObjectName("btn_delete_force")
         self.gridLayout_3.addWidget(self.btn_delete_force, 0, 1, 1, 1)
         self.btn_apply_force = QtWidgets.QPushButton(self.gridLayoutWidget_4)
+        self.btn_apply_force.setStyleSheet("background-color: rgb(255, 255, 0);")
         self.btn_apply_force.setObjectName("btn_apply_force")
         self.gridLayout_3.addWidget(self.btn_apply_force, 1, 0, 1, 1)
         self.btn_add_force = QtWidgets.QPushButton(self.gridLayoutWidget_4)
@@ -68,6 +69,9 @@ class Ui_Form(object):
         self.widget_strain = StrainPlotWidget(self.gridLayoutWidget_4)
         self.widget_strain.setObjectName("widget_strain")
         self.gridLayout_4.addWidget(self.widget_strain, 1, 1, 1, 1)
+        self.textBrowser_info = QtWidgets.QTextBrowser(Form)
+        self.textBrowser_info.setGeometry(QtCore.QRect(20, 550, 1281, 71))
+        self.textBrowser_info.setObjectName("textBrowser_info")
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -78,11 +82,13 @@ class Ui_Form(object):
         self.label.setText(_translate("Form", "COM"))
         self.btnSetParameters.setText(_translate("Form", "设置参数"))
         self.btn_delete_force.setText(_translate("Form", "删除"))
+        self.btn_apply_force.setStatusTip(_translate("Form", "开始前先点击应用"))
         self.btn_apply_force.setText(_translate("Form", "应用"))
         self.btn_add_force.setText(_translate("Form", "添加"))
         self.btnEnd.setText(_translate("Form", "结束测量"))
         self.btnReceive.setText(_translate("Form", "开始测量"))
         self.btnSave.setText(_translate("Form", "保存数据"))
+        self.widget_strain.setWhatsThis(_translate("Form", "<html><head/><body><p>开始测量过程前先点击应用确认测量数据</p></body></html>"))
 
 from matplotlibwidget import MatplotlibWidget
 from strainplotwidget import StrainPlotWidget
