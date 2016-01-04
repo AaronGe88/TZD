@@ -11,18 +11,15 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(1317, 652)
+        Form.resize(1332, 652)
         self.gridLayoutWidget_4 = QtWidgets.QWidget(Form)
-        self.gridLayoutWidget_4.setGeometry(QtCore.QRect(20, 20, 1281, 511))
+        self.gridLayoutWidget_4.setGeometry(QtCore.QRect(20, 20, 321, 511))
         self.gridLayoutWidget_4.setObjectName("gridLayoutWidget_4")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.gridLayoutWidget_4)
         self.gridLayout_4.setContentsMargins(-1, -1, 0, 10)
         self.gridLayout_4.setObjectName("gridLayout_4")
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_4.addItem(spacerItem, 0, 1, 1, 1)
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_4.addItem(spacerItem1, 0, 3, 1, 1)
         self.tableView_force = QtWidgets.QTableView(self.gridLayoutWidget_4)
+        self.tableView_force.setMaximumSize(QtCore.QSize(300, 16777215))
         self.tableView_force.setObjectName("tableView_force")
         self.gridLayout_4.addWidget(self.tableView_force, 1, 0, 1, 1)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
@@ -60,25 +57,21 @@ class Ui_Form(object):
         self.btnSave.setObjectName("btnSave")
         self.gridLayout_3.addWidget(self.btnSave, 1, 1, 1, 1)
         self.gridLayout_4.addLayout(self.gridLayout_3, 2, 0, 1, 1)
-        self.gridLayout_2 = QtWidgets.QGridLayout()
-        self.gridLayout_2.setObjectName("gridLayout_2")
-        self.gridLayout_4.addLayout(self.gridLayout_2, 0, 2, 1, 1)
-        self.widget_flatten = MatplotlibWidget(self.gridLayoutWidget_4)
-        self.widget_flatten.setObjectName("widget_flatten")
-        self.gridLayout_4.addWidget(self.widget_flatten, 1, 3, 1, 1)
-        self.widget_strain = StrainPlotWidget(self.gridLayoutWidget_4)
-        self.widget_strain.setObjectName("widget_strain")
-        self.gridLayout_4.addWidget(self.widget_strain, 1, 1, 1, 1)
         self.textBrowser_info = QtWidgets.QTextBrowser(Form)
         self.textBrowser_info.setGeometry(QtCore.QRect(20, 550, 1281, 71))
         self.textBrowser_info.setObjectName("textBrowser_info")
+        self.widget_strain = StrainPlotWidget(Form)
+        self.widget_strain.setGeometry(QtCore.QRect(350, 10, 951, 531))
+        self.widget_strain.setMinimumSize(QtCore.QSize(800, 0))
+        self.widget_strain.setMaximumSize(QtCore.QSize(1000, 16777215))
+        self.widget_strain.setObjectName("widget_strain")
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
+        Form.setWindowTitle(_translate("Form", "拉伸机同轴度测量系统"))
         self.label.setText(_translate("Form", "COM"))
         self.btnSetParameters.setText(_translate("Form", "设置参数"))
         self.btn_delete_force.setText(_translate("Form", "删除"))
@@ -90,5 +83,4 @@ class Ui_Form(object):
         self.btnSave.setText(_translate("Form", "保存数据"))
         self.widget_strain.setWhatsThis(_translate("Form", "<html><head/><body><p>开始测量过程前先点击应用确认测量数据</p></body></html>"))
 
-from matplotlibwidget import MatplotlibWidget
 from strainplotwidget import StrainPlotWidget

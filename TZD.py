@@ -47,10 +47,12 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 	 
 		self.forces.setHeaderData(0,Qt.Horizontal,u"拉力(KN) 0") 
 		self.forces.setHeaderData(1,Qt.Horizontal,u"拉力(KN) 180")
-		self.tableView_force.setSelectionBehavior(QAbstractItemView.SelectRows);
+		self.tableView_force.setSelectionBehavior(QAbstractItemView.SelectRows)
 		self.tableView_force.setModel(self.forces)
 		self.tableView_force.resizeRowsToContents
 		self.tableView_force.setSelectionBehavior(QAbstractItemView.SelectItems)
+		
+		
 		try:
 			self.sense = np.loadtxt("sense.txt")
 			self.rcal = np.loadtxt("RCAL.txt")
@@ -97,19 +99,32 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 		
 	def on_btn_apply_force(self):
 		import csv
-		self.list_forces = []
+		list_forces = []
 		with open("forces.csv","w",newline = "") as f:
 			f_csv = csv.writer(f,delimiter = ",")
 			for ii in range(0,self.forces.rowCount()):
 				f_csv.writerow([self.forces.item(ii).text(),])
-				self.list_forces.append(float(self.forces.item(ii).text()))
-		self.array_forces = np.array(self.list_forces)
+				list_forces.append(float(self.forces.item(ii).text()))
+		self.array_forces = np.array(list_forces)
 		#0 和 180度 应变值
 		self.strains_0degree = np.zeros([self.array_forces.size,12],dtype = np.float64)
 		self.strains_180degree = np.zeros([self.array_forces.size,12],dtype = np.float64)
-		self.btn_apply_force.setFocus(Qt.MouseFocusReason)
+		
+		#轴向应变 a
+		self.strain_0axial = np.zeros([self.array_forces.size,3],dtype = np.float64)
+		self.strain_180axial = np.zeros([self.array_forces.size,3],dtype = np.float64)
+		
+		#弯曲应变 B_mc, B_sp
+		self.strain_bend_mc = np.zeros([self.array_forces.size,3],dtype = np.float64)
+		self.strain_bend_sp = np.zeros([self.array_forces.size,3],dtype = np.float64)
+		
+		#方位角
+		self.strain_theta_mc = np.zeros([self.array_forces.size,3],dtype = np.float64)
+		self.strain_theta_sp = np.zeros([self.array_forces.size,3],dtype = np.float64)
+		
 		self.textBrowser_info.setText(u"数据确认成功")
-			
+		
+		
 	def on_btn_begin(self):
 	
 		selection = self.tableView_force.selectionModel()
@@ -180,21 +195,113 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 		else:
 			try:
 				mean_strain = np.mean(self.this_strain,axis = 0)
-				
+				#三个平面的轴向应变
+				aA = np.mean(mean_strain[0:4])
+				aB = np.mean(mean_strain[4:8])
+				aC = np.mean(mean_strain[8:12])
 				if self.index_angle == .0:
 					self.strains_0degree[self.index_row,:] = mean_strain
+					self.strain_0axial[self.index_row,:] = np.array([aA,aB,aC])
+					print(self.strain_0axial)
 					tip = "".join([u"测试成功\n",str(self.strains_0degree)])
 				else:
 					self.strains_180degree[self.index_row,:] = mean_strain
+					self.strain_180axial[self.index_row,:] = np.array([a1,a2,a3])
+					print(self.strain_180axial)
 					tip = "".join([u"测试成功\n",str(self.strains_180degree)])
+				
 				self.textBrowser_info.setText(tip)
 			except AttributeError as e:
 				self.textBrowser_info.setText(u"请先点击应用")
 				self.textBrowser_info.setText(str(e))
 				
+			try:
+				if self.strain_0axial[self.index_row,0] != 0 and \
+					self.strain_180axial[self.index_row,0] != 0:
+					strain_axial = (self.strain_0axial + self.strain_180axial) / 2
+				elif self.strain_180axial[self.index_row,0] != 0:
+					strain_axial = self.strain_180axial
+				else :
+					strain_axial = self.strain_0axial
+				print(strain_axial.shape)
+			except Exception as e:
+				print (e)
+			
+			try:
+				self.plot_strain_axial(self.array_forces,strain_axial)
+			except Exception as e:
+				print(e)
 				
-		
-		
+			try:
+				if self.strain_0axial[self.index_row,0] != 0.0 and\
+					self.strain_180axial[self.index_row,0] != 0.0:
+					#三个截面
+					for ii in range(0,3):
+						#弯曲应变 0度
+						b_0  = self.strains_0degree[self.index_row,4*ii:4*ii+4] - \
+							self.strain_0axial[self.index_row,ii] 
+						print(self.strains_0degree[self.index_row,4*ii:4*ii+4])
+						#弯曲应变 180度
+						b_180 = self.strains_180degree[self.index_row,4*ii:4*ii+4] - \
+							self.strain_180axial[self.index_row,ii]
+						#机器分量
+						b_mc = (b_0 - b_180) / 2
+						#试件分量
+						b_sp = (b_0 + b_180) / 2
+						self.strain_bend_mc[self.index_row,ii] = np.sqrt(np.sum(b_mc ** 2) / 2)
+						self.strain_bend_sp[self.index_row,ii] = np.sqrt(np.sum(b_sp ** 2) / 2)
+						#方位角
+						B_mc_float = np.sum(b_mc ** 2) / 2
+						B_sp_float = np.sum(b_mc ** 2) / 2
+						#P71 方位角机器分量
+						theta_0 = (b_mc[1] - b_mc[3]) / \
+							np.fabs(b_mc[1] - b_mc[3]) * \
+							np.arccos(b_mc[0] / B_mc_float)
+						theta_1 = (b_mc[2] - b_mc[0]) / \
+							np.fabs(b_mc[2] - b_mc[0]) * \
+							np.arccos(b_mc[1] / B_mc_float) + np.pi / 2
+							
+						theta_2 = (b_mc[3] - b_mc[1]) / \
+							np.fabs(b_mc[3] - b_mc[1]) * \
+							np.arccos(b_mc[2] / B_mc_float) + np.pi
+						
+						theta_3 = (b_mc[0] - b_mc[2]) / \
+							np.fabs(b_mc[0] - b_mc[2]) * \
+							np.arccos(b_mc[3] / B_mc_float) + 1.5 * np.pi
+						theta_mc = np.sum([theta_0, theta_1, theta_2, theta_3]) / 4
+						
+						self.strain_theta_mc[self.index_row, ii] = theta_mc
+						
+						#P71 方位角机试件分量
+						theta_0 = (b_sp[1] - b_sp[3]) / \
+							np.fabs(b_sp[1] - b_sp[3]) * \
+							np.arccos(b_sp[0] / B_sp_float)
+						theta_1 = (b_sp[2] - b_sp[0]) / \
+							np.fabs(b_sp[2] - b_sp[0]) * \
+							np.arccos(b_sp[1] / B_sp_float) + np.pi / 2
+							
+						theta_2 = (b_sp[3] - b_sp[1]) / \
+							np.fabs(b_sp[3] - b_sp[1]) * \
+							np.arccos(b_sp[2] / B_sp_float) + np.pi
+						
+						theta_3 = (b_sp[0] - b_sp[3]) / \
+							np.fabs(b_sp[0] - b_sp[3]) * \
+							np.arccos(b_sp[3] / B_sp_float) + 1.5 * np.pi
+						theta_sp = np.sum([theta_0, theta_1, theta_2, theta_3]) / 4
+						self.strain_theta_sp[self.index_row, ii] = theta_sp
+						
+					#print(self.strain_bend_mc,"\n",self.strain_bend_sp)
+					#绘制弯曲应变机器分量
+					self.widget_strain.show_strain_bending(self.strain_0axial,\
+															self.strain_180axial,\
+															self.strain_bend_mc)
+					#绘制方位角机器分量
+					self.widget_strain.show_strain_angle(self.strain_theta_mc[self.index_row,:])
+														
+			except AttributeError as e:
+				print(e)
+				tip = u"请先点击应用"
+				self.textBrowser_info.setText(tip)
 			
 		
 	def onTimer(self):
@@ -246,7 +353,10 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 				
 		
 	def plot_strains(self,strain):
-		self.widget_strain.set_lines(strain)
+		self.widget_strain.show_strains(strain)
+	
+	def plot_strain_axial(self,*strain_axial):
+		self.widget_strain.show_strain_axial(*strain_axial)
 		
 	def read_from_serial(self,out_q):
 		while self._running != 0:
