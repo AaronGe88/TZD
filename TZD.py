@@ -20,12 +20,13 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 		self._running = False
 		
 		try:
-			self.ser.port = 'COM1'
+			self.ser.port = 'COM3'
 			self.ser.open()
 			if self.ser.isOpen:
-				self.comboBox.addItem("1")
+				self.comboBox.addItem("3")
 		except serial.serialutil.SerialException as e:
-			print(str(e))
+			#print(str(e))
+			self.textBrowser_info.setText(str(e))
 		
 		#u"计时器"
 		self.timer = QTimer()		
@@ -57,7 +58,7 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 			self.sense = np.loadtxt("sense.txt")
 			self.rcal = np.loadtxt("RCAL.txt")
 		except ValueError as e:
-			print(e)
+			#print(e)
 			self.set_parameters(self)
 			
 		
@@ -86,7 +87,8 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 				for row in f_cvs:
 					yield row
 		except Exception as e:
-			print(str(e))
+			#print(str(e))
+			self.textBrowser_info.setText(str(e))
 				
 			
 			
@@ -148,7 +150,7 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 			#u"打开串口"
 			if not self.ser.isOpen():
 				self.ser.open()
-			self.timer.start(100)
+			self.timer.start(500)
 			
 			self.byte_queue = Queue()
 			self.results = Queue()
@@ -175,12 +177,12 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 			self.ser.close()
 			self.timer.stop()
 		except Exception as e:
-			print(str(e),139)
+			self.textBrowser_info.setText(str(e))
 		else:
 			self.textBrowser_info.setText(u"串口已关闭！\n计时器已关闭")
 		if self.index_force == 0.0:
 			self.mean_adcs0 = np.mean(self.cur_adcs,axis = 0) 
-				#print(self.mean_adcs0)
+			#print(self.mean_adcs0)
 			try:
 				if np.isnan(self.mean_adcs0):
 						#msbox = QMessageBox(QMessageBox.Warning,u"警告",u"", QMessageBox.Cancel);  
@@ -199,17 +201,20 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 				aA = np.mean(mean_strain[0:4])
 				aB = np.mean(mean_strain[4:8])
 				aC = np.mean(mean_strain[8:12])
-				if self.index_angle == .0:
-					self.strains_0degree[self.index_row,:] = mean_strain
-					self.strain_0axial[self.index_row,:] = np.array([aA,aB,aC])
-					print(self.strain_0axial)
-					tip = "".join([u"测试成功\n",str(self.strains_0degree)])
+				if self.is_serial_valid == False:
+					tip = "".join([u"串口无信号\n请结束测量检测串口"])
 				else:
-					self.strains_180degree[self.index_row,:] = mean_strain
-					self.strain_180axial[self.index_row,:] = np.array([a1,a2,a3])
-					print(self.strain_180axial)
-					tip = "".join([u"测试成功\n",str(self.strains_180degree)])
-				
+					if self.index_angle == .0:
+						self.strains_0degree[self.index_row,:] = mean_strain
+						self.strain_0axial[self.index_row,:] = np.array([aA,aB,aC])
+						#print(self.strain_0axial)
+						tip = "".join([u"测试成功\n",str(self.strains_0degree)])
+					else:
+						
+						self.strains_180degree[self.index_row,:] = mean_strain
+						self.strain_180axial[self.index_row,:] = np.array([aA,aB,aC])
+						#print(self.strain_180axial)
+						tip = "".join([u"测试成功\n",str(self.strains_180degree)])
 				self.textBrowser_info.setText(tip)
 			except AttributeError as e:
 				self.textBrowser_info.setText(u"请先点击应用")
@@ -252,6 +257,7 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 						self.strain_bend_sp[self.index_row,ii] = np.sqrt(np.sum(b_sp ** 2) / 2)
 						#方位角
 						B_mc_float = np.sum(b_mc ** 2) / 2
+						print("B_mc_float\n",B_mc_float)
 						B_sp_float = np.sum(b_mc ** 2) / 2
 						#P71 方位角机器分量
 						theta_0 = (b_mc[1] - b_mc[3]) / \
@@ -296,11 +302,12 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 															self.strain_180axial,\
 															self.strain_bend_mc)
 					#绘制方位角机器分量
+					#print("theta MC\n",self.strain_theta_mc[self.index_row,:])
 					self.widget_strain.show_strain_angle(self.strain_theta_mc[self.index_row,:])
 														
 			except AttributeError as e:
-				print(e)
-				tip = u"请先点击应用"
+				#print(e)
+				tip = "".join([str(e),u"请先点击应用"]) 
 				self.textBrowser_info.setText(tip)
 			
 		
@@ -313,13 +320,14 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 			for ii in range(0,size):
 				list_adcs.append(self.adcs.get())
 			array_adcs = np.array(list_adcs)
+			#print(array_adcs,"\n array_adcs")
 			if  self.is_zero == True:
 				self.cur_adcs = array_adcs
 				self.is_zero = False
 			else:
-				#print(self.all_adcs.shape,array_adcs.shape)
+				
 				self.cur_adcs = np.concatenate((self.cur_adcs,array_adcs),axis = 0)
-				#print(self.all_adcs)
+				#print("cur_adcs\n",self.cur_adcs)
 		except Exception as e:
 			self.textBrowser_info.setText(str(e))
 			
@@ -332,14 +340,17 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 				#msbox = QMessageBox(QMessageBox.Warning,u"警告",u"串口无信号/t请结束测量检测串口", QMessageBox.Cancel);  
 				#msbox.exec_()  
 				#self.on_btn_end()
-				self.textBrowser_info.setText(u"串口无信号\n请结束测量检测串口")
+				self.is_serial_valid = False
+				self.textBrowser_info.setText(u"串口无信号\n请重试")
 			except AttributeError as e:
 				#print(e)
 				#msbox = QMessageBox(QMessageBox.Warning,u"警告",u"请首先测试0拉力", QMessageBox.Cancel);  
 				#msbox.exec_() 
 				#self.on_btn_end()
 				self.textBrowser_info.setText(u"请首先测试0拉力")
-				
+				self.is_serial_valid = False
+			else:
+				self.is_serial_valid = True
 			if self.sense.size == 12 and self.rcal.size ==12 :
 				try:
 					self.this_strain = self.cur_adcs_minused / self.rcal / self.sense
