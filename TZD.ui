@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>拉伸机同轴度测量系统</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>source/logo.PNG</normaloff>source/logo.PNG</iconset>
+  </property>
   <widget class="QWidget" name="gridLayoutWidget_4">
    <property name="geometry">
     <rect>
@@ -29,16 +33,6 @@
     <property name="bottomMargin">
      <number>10</number>
     </property>
-    <item row="1" column="0">
-     <widget class="QTableView" name="tableView_force">
-      <property name="maximumSize">
-       <size>
-        <width>300</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
     <item row="0" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
@@ -52,7 +46,14 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox"/>
+       <widget class="QLineEdit" name="lineEdit_com">
+        <property name="maximumSize">
+         <size>
+          <width>80</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btnSetParameters">
@@ -115,6 +116,23 @@
       </item>
      </layout>
     </item>
+    <item row="1" column="0">
+     <widget class="QTableView" name="tableView_force">
+      <property name="maximumSize">
+       <size>
+        <width>300</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QCheckBox" name="checkBox_twice">
+      <property name="text">
+       <string>两次测量</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QTextBrowser" name="textBrowser_info">
@@ -122,7 +140,7 @@
     <rect>
      <x>20</x>
      <y>550</y>
-     <width>1281</width>
+     <width>1111</width>
      <height>71</height>
     </rect>
    </property>
@@ -140,7 +158,7 @@
     <bool>true</bool>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -182,7 +200,7 @@
        <x>10</x>
        <y>0</y>
        <width>921</width>
-       <height>361</height>
+       <height>690</height>
       </rect>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -235,7 +253,7 @@
           </property>
          </spacer>
         </item>
-        <item row="2" column="0">
+        <item row="4" column="0">
          <widget class="QLabel" name="label_3">
           <property name="minimumSize">
            <size>
@@ -248,7 +266,7 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
+        <item row="4" column="1">
          <widget class="QLineEdit" name="lineEdit_A_A">
           <property name="minimumSize">
            <size>
@@ -264,7 +282,7 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
+        <item row="6" column="0">
          <widget class="QLineEdit" name="lineEdit_A_A0">
           <property name="minimumSize">
            <size>
@@ -280,7 +298,7 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
+        <item row="6" column="1">
          <widget class="QLineEdit" name="lineEdit_A_A1">
           <property name="minimumSize">
            <size>
@@ -296,7 +314,7 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="0">
+        <item row="8" column="0">
          <widget class="QLineEdit" name="lineEdit_A_A2">
           <property name="minimumSize">
            <size>
@@ -312,7 +330,7 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="8" column="1">
          <widget class="QLineEdit" name="lineEdit_A_A3">
           <property name="minimumSize">
            <size>
@@ -328,7 +346,7 @@
           </property>
          </widget>
         </item>
-        <item row="6" column="0">
+        <item row="9" column="0">
          <spacer name="verticalSpacer_3">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -341,7 +359,7 @@
           </property>
          </spacer>
         </item>
-        <item row="6" column="1">
+        <item row="9" column="1">
          <spacer name="verticalSpacer_4">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -354,7 +372,7 @@
           </property>
          </spacer>
         </item>
-        <item row="7" column="0">
+        <item row="11" column="0">
          <widget class="QLabel" name="label_4">
           <property name="minimumSize">
            <size>
@@ -367,7 +385,7 @@
           </property>
          </widget>
         </item>
-        <item row="7" column="1">
+        <item row="11" column="1">
          <widget class="QLineEdit" name="lineEdit_A_B">
           <property name="minimumSize">
            <size>
@@ -383,7 +401,7 @@
           </property>
          </widget>
         </item>
-        <item row="8" column="0">
+        <item row="13" column="0">
          <widget class="QLineEdit" name="lineEdit_A_B0">
           <property name="minimumSize">
            <size>
@@ -399,7 +417,7 @@
           </property>
          </widget>
         </item>
-        <item row="8" column="1">
+        <item row="13" column="1">
          <widget class="QLineEdit" name="lineEdit_A_B1">
           <property name="minimumSize">
            <size>
@@ -415,7 +433,7 @@
           </property>
          </widget>
         </item>
-        <item row="9" column="0">
+        <item row="15" column="0">
          <widget class="QLineEdit" name="lineEdit_A_B2">
           <property name="minimumSize">
            <size>
@@ -425,7 +443,7 @@
           </property>
          </widget>
         </item>
-        <item row="9" column="1">
+        <item row="15" column="1">
          <widget class="QLineEdit" name="lineEdit_A_B3">
           <property name="minimumSize">
            <size>
@@ -441,7 +459,7 @@
           </property>
          </widget>
         </item>
-        <item row="10" column="0">
+        <item row="16" column="0">
          <spacer name="verticalSpacer_5">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -454,7 +472,7 @@
           </property>
          </spacer>
         </item>
-        <item row="10" column="1">
+        <item row="16" column="1">
          <spacer name="verticalSpacer_6">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -466,6 +484,76 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_11">
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLabel" name="label_12">
+          <property name="text">
+           <string>2</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="QLabel" name="label_13">
+          <property name="text">
+           <string>3</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="QLabel" name="label_14">
+          <property name="text">
+           <string>4</string>
+          </property>
+         </widget>
+        </item>
+        <item row="10" column="1">
+         <widget class="QLabel" name="label_15">
+          <property name="text">
+           <string>平均值</string>
+          </property>
+         </widget>
+        </item>
+        <item row="12" column="0">
+         <widget class="QLabel" name="label_16">
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="12" column="1">
+         <widget class="QLabel" name="label_17">
+          <property name="text">
+           <string>2</string>
+          </property>
+         </widget>
+        </item>
+        <item row="14" column="0">
+         <widget class="QLabel" name="label_18">
+          <property name="text">
+           <string>3</string>
+          </property>
+         </widget>
+        </item>
+        <item row="14" column="1">
+         <widget class="QLabel" name="label_19">
+          <property name="text">
+           <string>4</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLabel" name="label_68">
+          <property name="text">
+           <string>平均值</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -518,7 +606,14 @@
           </property>
          </spacer>
         </item>
-        <item row="2" column="0">
+        <item row="2" column="1">
+         <widget class="QLabel" name="label_20">
+          <property name="text">
+           <string>平均值</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
          <widget class="QLabel" name="label_6">
           <property name="minimumSize">
            <size>
@@ -531,7 +626,7 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
+        <item row="3" column="1">
          <widget class="QLineEdit" name="lineEdit_B_A">
           <property name="minimumSize">
            <size>
@@ -547,7 +642,21 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_21">
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLabel" name="label_22">
+          <property name="text">
+           <string>2</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
          <widget class="QLineEdit" name="lineEdit_B_A0">
           <property name="minimumSize">
            <size>
@@ -563,7 +672,7 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
+        <item row="6" column="1">
          <widget class="QLineEdit" name="lineEdit_B_A1">
           <property name="minimumSize">
            <size>
@@ -579,7 +688,21 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="0">
+        <item row="7" column="0">
+         <widget class="QLabel" name="label_23">
+          <property name="text">
+           <string>3</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="QLabel" name="label_24">
+          <property name="text">
+           <string>4</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="0">
          <widget class="QLineEdit" name="lineEdit_B_A2">
           <property name="minimumSize">
            <size>
@@ -595,7 +718,7 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="8" column="1">
          <widget class="QLineEdit" name="lineEdit_B_A3">
           <property name="minimumSize">
            <size>
@@ -611,7 +734,7 @@
           </property>
          </widget>
         </item>
-        <item row="6" column="0">
+        <item row="9" column="0">
          <spacer name="verticalSpacer_8">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -624,7 +747,7 @@
           </property>
          </spacer>
         </item>
-        <item row="6" column="1">
+        <item row="9" column="1">
          <spacer name="verticalSpacer_9">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -637,7 +760,14 @@
           </property>
          </spacer>
         </item>
-        <item row="7" column="0">
+        <item row="10" column="1">
+         <widget class="QLabel" name="label_25">
+          <property name="text">
+           <string>平均值</string>
+          </property>
+         </widget>
+        </item>
+        <item row="11" column="0">
          <widget class="QLabel" name="label_7">
           <property name="minimumSize">
            <size>
@@ -650,7 +780,7 @@
           </property>
          </widget>
         </item>
-        <item row="7" column="1">
+        <item row="11" column="1">
          <widget class="QLineEdit" name="lineEdit_B_B">
           <property name="minimumSize">
            <size>
@@ -666,7 +796,21 @@
           </property>
          </widget>
         </item>
-        <item row="8" column="0">
+        <item row="12" column="0">
+         <widget class="QLabel" name="label_26">
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="12" column="1">
+         <widget class="QLabel" name="label_27">
+          <property name="text">
+           <string>2</string>
+          </property>
+         </widget>
+        </item>
+        <item row="13" column="0">
          <widget class="QLineEdit" name="lineEdit_B_B0">
           <property name="minimumSize">
            <size>
@@ -682,7 +826,7 @@
           </property>
          </widget>
         </item>
-        <item row="8" column="1">
+        <item row="13" column="1">
          <widget class="QLineEdit" name="lineEdit_B_B1">
           <property name="minimumSize">
            <size>
@@ -698,7 +842,21 @@
           </property>
          </widget>
         </item>
-        <item row="9" column="0">
+        <item row="14" column="0">
+         <widget class="QLabel" name="label_28">
+          <property name="text">
+           <string>3</string>
+          </property>
+         </widget>
+        </item>
+        <item row="14" column="1">
+         <widget class="QLabel" name="label_29">
+          <property name="text">
+           <string>4</string>
+          </property>
+         </widget>
+        </item>
+        <item row="15" column="0">
          <widget class="QLineEdit" name="lineEdit_B_B2">
           <property name="minimumSize">
            <size>
@@ -708,7 +866,7 @@
           </property>
          </widget>
         </item>
-        <item row="9" column="1">
+        <item row="15" column="1">
          <widget class="QLineEdit" name="lineEdit_B_B3">
           <property name="minimumSize">
            <size>
@@ -724,7 +882,7 @@
           </property>
          </widget>
         </item>
-        <item row="10" column="0">
+        <item row="16" column="0">
          <spacer name="verticalSpacer_10">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -737,7 +895,7 @@
           </property>
          </spacer>
         </item>
-        <item row="10" column="1">
+        <item row="16" column="1">
          <spacer name="verticalSpacer_11">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -754,7 +912,7 @@
       </item>
       <item>
        <layout class="QFormLayout" name="formLayout_3">
-        <item row="2" column="0">
+        <item row="3" column="0">
          <widget class="QLabel" name="label_9">
           <property name="minimumSize">
            <size>
@@ -767,7 +925,7 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
+        <item row="3" column="1">
          <widget class="QLineEdit" name="lineEdit_C_A">
           <property name="minimumSize">
            <size>
@@ -777,7 +935,7 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
+        <item row="5" column="0">
          <widget class="QLineEdit" name="lineEdit_C_A0">
           <property name="minimumSize">
            <size>
@@ -793,7 +951,7 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
+        <item row="5" column="1">
          <widget class="QLineEdit" name="lineEdit_C_A1">
           <property name="minimumSize">
            <size>
@@ -803,7 +961,7 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="0">
+        <item row="7" column="0">
          <widget class="QLineEdit" name="lineEdit_C_A2">
           <property name="minimumSize">
            <size>
@@ -819,7 +977,7 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="7" column="1">
          <widget class="QLineEdit" name="lineEdit_C_A3">
           <property name="minimumSize">
            <size>
@@ -829,7 +987,7 @@
           </property>
          </widget>
         </item>
-        <item row="7" column="0">
+        <item row="10" column="0">
          <widget class="QLabel" name="label_10">
           <property name="minimumSize">
            <size>
@@ -842,7 +1000,7 @@
           </property>
          </widget>
         </item>
-        <item row="8" column="0">
+        <item row="12" column="0">
          <widget class="QLineEdit" name="lineEdit_C_B0">
           <property name="minimumSize">
            <size>
@@ -858,7 +1016,7 @@
           </property>
          </widget>
         </item>
-        <item row="8" column="1">
+        <item row="12" column="1">
          <widget class="QLineEdit" name="lineEdit_C_B1">
           <property name="minimumSize">
            <size>
@@ -874,7 +1032,7 @@
           </property>
          </widget>
         </item>
-        <item row="9" column="0">
+        <item row="14" column="0">
          <widget class="QLineEdit" name="lineEdit_C_B2">
           <property name="minimumSize">
            <size>
@@ -884,7 +1042,7 @@
           </property>
          </widget>
         </item>
-        <item row="9" column="1">
+        <item row="14" column="1">
          <widget class="QLineEdit" name="lineEdit_C_B3">
           <property name="minimumSize">
            <size>
@@ -907,7 +1065,7 @@
           </property>
          </spacer>
         </item>
-        <item row="6" column="0">
+        <item row="8" column="0">
          <spacer name="verticalSpacer_14">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -920,7 +1078,7 @@
           </property>
          </spacer>
         </item>
-        <item row="6" column="1">
+        <item row="8" column="1">
          <spacer name="verticalSpacer_15">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -933,7 +1091,7 @@
           </property>
          </spacer>
         </item>
-        <item row="10" column="0">
+        <item row="15" column="0">
          <spacer name="verticalSpacer_16">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -946,7 +1104,7 @@
           </property>
          </spacer>
         </item>
-        <item row="10" column="1">
+        <item row="15" column="1">
          <spacer name="verticalSpacer_17">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -959,7 +1117,7 @@
           </property>
          </spacer>
         </item>
-        <item row="7" column="1">
+        <item row="10" column="1">
          <widget class="QLineEdit" name="lineEdit_C_B">
           <property name="minimumSize">
            <size>
@@ -1003,12 +1161,80 @@
           </property>
          </widget>
         </item>
+        <item row="2" column="1">
+         <widget class="QLabel" name="label_58">
+          <property name="text">
+           <string>平均值</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_59">
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLabel" name="label_60">
+          <property name="text">
+           <string>2</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="label_61">
+          <property name="text">
+           <string>3</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLabel" name="label_62">
+          <property name="text">
+           <string>4</string>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="1">
+         <widget class="QLabel" name="label_63">
+          <property name="text">
+           <string>平均值</string>
+          </property>
+         </widget>
+        </item>
+        <item row="11" column="0">
+         <widget class="QLabel" name="label_64">
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="11" column="1">
+         <widget class="QLabel" name="label_65">
+          <property name="text">
+           <string>2</string>
+          </property>
+         </widget>
+        </item>
+        <item row="13" column="0">
+         <widget class="QLabel" name="label_66">
+          <property name="text">
+           <string>3</string>
+          </property>
+         </widget>
+        </item>
+        <item row="13" column="1">
+         <widget class="QLabel" name="label_67">
+          <property name="text">
+           <string>4</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
      </layout>
     </widget>
-    <zorder>horizontalLayoutWidget</zorder>
-    <zorder>verticalSpacer_2</zorder>
    </widget>
   </widget>
  </widget>

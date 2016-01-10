@@ -13,10 +13,10 @@ class MplCanvas(FigureCanvas):
 		
 		self.strain_widget_12 = self.fig.add_subplot(221)
 		#self.strain_widget_12 = self.fig.add_axes([0.12,0.1,0.8,0.8])
-		self.strain_widget_12.set_xlabel("Time(mm)")
+		self.strain_widget_12.set_xlabel("")
 		self.strain_widget_12.set_ylabel("Micro strain")
 		self.strain_widget_12.grid(True)
-		self.strain_widget_12.set_ylim([0, 0.5])  
+		self.strain_widget_12.set_ylim([-0.005, 0.005])  
 		self.strain_widget_12.set_xlim([0, 100]) 
 		
 		self.strain0, = self.strain_widget_12.plot([0],[0],'r--')
@@ -64,20 +64,24 @@ class MplCanvas(FigureCanvas):
 		# self.strain_theta_C, = self.strain_widget_theta.plot([0],[0],'k--')
 		self.strain_widget_theta.set_autoscale_on = True
 		"""
-			弯曲应变机器分量图
+			同轴度应变机器分量图
 		"""
 		self.strain_widget_bend = self.fig.add_subplot(224)
-		self.strain_widget_bend.set_xlabel(u"Axial strain")
-		self.strain_widget_bend.set_ylabel(u"Bending strain")
+		self.strain_widget_bend.set_xlabel(u"Force(KN)")
+		self.strain_widget_bend.set_ylabel(u"Alignment %")
 		self.strain_widget_bend.grid(True)
 		self.strain_widget_bend.set_autoscale_on = True
 		
-		self.strain_widget_bend.set_ylim([0, 0.5])  
-		self.strain_widget_bend.set_xlim([0, 10]) 
-		self.strain_bending_A, = self.strain_widget_bend.plot([0],[0],'ro')
-		self.strain_bending_B, = self.strain_widget_bend.plot([0],[0],'b*')
-		self.strain_bending_C, = self.strain_widget_bend.plot([0],[0],'k--')
+		self.strain_widget_bend.set_ylim([0, 100])  
+		self.strain_widget_bend.set_xlim([0, 30]) 
+		self.strain_bending_A, = self.strain_widget_bend.plot([0],[0],color = "r",\
+																linestyle = "solid", marker = "o")
+		self.strain_bending_B, = self.strain_widget_bend.plot([0],[0],color = "b",\
+																linestyle = "-.", marker = "*")
+		self.strain_bending_C, = self.strain_widget_bend.plot([0],[0],color = "k",\
+																linestyle = "--", marker = "d")
 		
+		self.is_zeros = True
 		FigureCanvas.__init__(self, self.fig)
 		FigureCanvas.setSizePolicy(self, QSizePolicy.Expanding,QSizePolicy.Expanding)
 		FigureCanvas.updateGeometry(self)
@@ -116,13 +120,18 @@ class MplCanvas(FigureCanvas):
 			self.strain11.set_ydata(args[:,11])
 			
 			maxx = np.amax(args)
-			
+			min_y = np.amin(args)
 			xliml,xlimu = self.strain_widget_12.get_xlim()
 			yliml,ylimu = self.strain_widget_12.get_ylim()
+			
+			if min_y < yliml:
+				yliml = min_y
+				#print(min_y)
 			if xlimu < xval:
 				self.strain_widget_12.set_xlim([0,xval * 1.5])
 			if ylimu < maxx:
-				self.strain_widget_12.set_ylim([0,maxx * 1.5])
+				ylimu = maxx
+			self.strain_widget_12.set_ylim([yliml,ylimu])
 			#self.strain_widget_12.draw_artist(self.flat0)
 			# self.strain_widget_12.draw_artist(self.strain01)
 			# self.strain_widget_12.draw_artist(self.flat2)
@@ -137,7 +146,7 @@ class MplCanvas(FigureCanvas):
 			array_forces, strain_axial = args
 		except ValueError as e:
 			print(e)
-		print(len(self.strain_widget_axial.lines))
+		#print(len(self.strain_widget_axial.lines))
 		for _ in range(len(self.strain_widget_axial.lines)):
 			self.strain_widget_axial.lines.remove(self.strain_widget_axial.lines[0])
 		# self.strain_A.set_xdata(array_forces)
@@ -147,7 +156,7 @@ class MplCanvas(FigureCanvas):
 		# self.strain_B.set_ydata(strain_axial[:,1])
 		# self.strain_C.set_xdata(array_forces)
 		# self.strain_C.set_ydata(strain_axial[:,2])
-		print(len(self.strain_widget_axial.lines))
+		#print(len(self.strain_widget_axial.lines))
 		strain_A, = self.strain_widget_axial.plot(array_forces,strain_axial[:,0],\
 												color = "r",linestyle = "solid", marker = "o")
 		strain_B, = self.strain_widget_axial.plot(array_forces,strain_axial[:,1],\
@@ -157,46 +166,63 @@ class MplCanvas(FigureCanvas):
 		
 		max_y = np.amax(strain_axial)
 		max_x = np.amax(array_forces)
+		min_y = np.amin(strain_axial)
 		xliml,xlimu = self.strain_widget_axial.get_xlim()
 		yliml,ylimu = self.strain_widget_axial.get_ylim()
+		
 		if xlimu < max_x:
 			self.strain_widget_axial.set_xlim([0,max_x * 1.5])
+		if yliml > min_y:
+			yliml = min_y
 		if ylimu < max_y:
-			self.strain_widget_axial.set_ylim([0,max_y * 1.5])
+			ylimu = max_y
+		self.strain_widget_axial.set_ylim([yliml,ylimu])
 		self.strain_widget_axial.autoscale_view()
 		self.draw()
 		
 	def show_strain_bending(self,*args):
 		try:
-			axial_0strain, axial_180strain, strain_bend = args
+			forces, axial_0strain, axial_180strain, strain_bend, row = args
 		except ValueError as e:
 			print(e)
 		
 		strain_axial = (axial_0strain + axial_180strain) / 2
-		self.strain_bending_A.set_xdata(strain_axial[:,0])
-		self.strain_bending_A.set_ydata(strain_bend[:,0])
+		if self.is_zeros == True:
+			self.tzd = np.zeros([forces.size - 1, 3])
+			self.tzd[row - 1,:] = strain_bend[row,:] / strain_axial[row,:]
+			self.is_zeros = False
+		else:
+			self.tzd[row - 1,:] = strain_bend[row,:] / strain_axial[row,:]
 		
-		self.strain_bending_B.set_xdata(strain_axial[:,1])
-		self.strain_bending_B.set_ydata(strain_bend[:,1])
+		self.strain_bending_A.set_xdata(forces[1:])
+		self.strain_bending_A.set_ydata(self.tzd[:,0] * 100)
 		
-		self.strain_bending_C.set_xdata(strain_axial[:,2])
-		self.strain_bending_C.set_ydata(strain_bend[:,2])
+		self.strain_bending_B.set_xdata(forces[1:])
+		self.strain_bending_B.set_ydata(self.tzd[:,1] * 100)
 		
-		max_y = np.amax(strain_bend)
-		max_x = np.amax(strain_axial)
+		self.strain_bending_C.set_xdata(forces[1:])
+		self.strain_bending_C.set_ydata(self.tzd[:,2] * 100)
+		print(self.tzd)
+		max_y = np.amax(self.tzd)
+		min_y = np.amin(self.tzd)
+		max_x = np.amax(forces)
+		
 		xliml,xlimu = self.strain_widget_bend.get_xlim()
 		yliml,ylimu = self.strain_widget_bend.get_ylim()
 		if xlimu < max_x:
 			self.strain_widget_bend.set_xlim([0,max_x * 1.5])
 		if ylimu < max_y:
-			self.strain_widget_bend.set_ylim([0,max_y * 1.5])
+			ylimu = max_y
+		if yliml > min_y:
+			yliml = min_y
+		self.strain_widget_bend.set_ylim([yliml,ylimu])
 		self.strain_widget_bend.autoscale_view()
 		self.draw()
 		
 	def show_strain_angle(self, *args):
 		try:
 			angle_mc, = args
-			print(angle_mc)
+			#print(angle_mc)
 		except ValueError as e:
 			print(e)
 		r = np.array(np.arange(0, 1, 0.1))
