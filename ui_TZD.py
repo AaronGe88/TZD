@@ -65,7 +65,7 @@ class Ui_Form(object):
         self.checkBox_twice.setObjectName("checkBox_twice")
         self.gridLayout_4.addWidget(self.checkBox_twice, 3, 0, 1, 1)
         self.textBrowser_info = QtWidgets.QTextBrowser(Form)
-        self.textBrowser_info.setGeometry(QtCore.QRect(20, 550, 1111, 71))
+        self.textBrowser_info.setGeometry(QtCore.QRect(20, 550, 1301, 71))
         self.textBrowser_info.setObjectName("textBrowser_info")
         self.tabWidget = QtWidgets.QTabWidget(Form)
         self.tabWidget.setGeometry(QtCore.QRect(366, 9, 951, 531))

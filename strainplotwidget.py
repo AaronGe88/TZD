@@ -2,6 +2,8 @@
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+import tkinter
+import tkinter.filedialog
 import matplotlib.pyplot as plt
 import numpy as np
 class MplCanvas(FigureCanvas):
@@ -19,20 +21,21 @@ class MplCanvas(FigureCanvas):
 		self.strain_widget_12.set_ylim([-0.005, 0.005])  
 		self.strain_widget_12.set_xlim([0, 100]) 
 		
-		self.strain0, = self.strain_widget_12.plot([0],[0],'r--')
-		self.strain1, = self.strain_widget_12.plot([0],[0],'rs')
-		self.strain2, = self.strain_widget_12.plot([0],[0],'rx')
-		self.strain3, = self.strain_widget_12.plot([0],[0],'ro')
+		self.strain0, = self.strain_widget_12.plot([0],[0],'r--',label = "A1" )
+		self.strain1, = self.strain_widget_12.plot([0],[0],'rs', label = "A2" )
+		self.strain2, = self.strain_widget_12.plot([0],[0],'rx', label = "A3" )
+		self.strain3, = self.strain_widget_12.plot([0],[0],'ro', label = "A4" )
 		
-		self.strain4, = self.strain_widget_12.plot([0],[0],'b--')
-		self.strain5, = self.strain_widget_12.plot([0],[0],'bs')
-		self.strain6, = self.strain_widget_12.plot([0],[0],'bx')
-		self.strain7, = self.strain_widget_12.plot([0],[0],'bo')
+		self.strain4, = self.strain_widget_12.plot([0],[0],'b--', label = "B4")
+		self.strain5, = self.strain_widget_12.plot([0],[0],'bs', label = "B4")
+		self.strain6, = self.strain_widget_12.plot([0],[0],'bx', label = "B4")
+		self.strain7, = self.strain_widget_12.plot([0],[0],'bo', label = "B4")
 		
-		self.strain8, = self.strain_widget_12.plot([0],[0],'k--')
-		self.strain9, = self.strain_widget_12.plot([0],[0],'ks')
-		self.strain10, = self.strain_widget_12.plot([0],[0],'kx')
-		self.strain11, = self.strain_widget_12.plot([0],[0],'ko')
+		self.strain8, = self.strain_widget_12.plot([0],[0],'k--', label = "C4")
+		self.strain9, = self.strain_widget_12.plot([0],[0],'ks', label = "C4")
+		self.strain10, = self.strain_widget_12.plot([0],[0],'kx', label = "C4")
+		self.strain11, = self.strain_widget_12.plot([0],[0],'ko', label = "C4")
+		#self.strain_widget_12.legend()
 		self.strain_widget_12.set_autoscale_on = True
 		"""
 			轴向应变测量的图表
@@ -50,6 +53,7 @@ class MplCanvas(FigureCanvas):
 		self.strain_widget_theta = self.fig.add_subplot(223,polar=True) 
 		#self.strain_widget_theta.rgrids(np.arange(0.5,2,0.5),angle=45)
 		self.strain_widget_theta.grid(True)
+		self.strain_widget_theta.set_yticklabels([0,1],visible = False)
 		self.strain_widget_theta.set_theta_zero_location("N")
 		self.strain_widget_theta.set_theta_direction(-1)
 		self.strain_widget_theta.set_rmax(1.0)
@@ -57,7 +61,7 @@ class MplCanvas(FigureCanvas):
 		#self.strain_widget_theta.set_rgrids(1.0)#, labels=None, angle=None, fmt=None, **kwargs)
 		#self.strain_widget_axial.set_rmax(2.0)
 		#self.strain_widget_axial.set_xlim([0, 10]) 
-		#plt.plot(theta,2*np.ones_like(theta),lw=2)  
+		#plt.plot(theta,2*np.(theta),lw=2)  
 		#plt.plot(theta,theta/6,'--',lw=2)
 		# self.strain_theta_A, = self.strain_widget_theta.plot([0],[0],'ro')
 		# self.strain_theta_B, = self.strain_widget_theta.plot([0],[0],'b*')
@@ -75,12 +79,14 @@ class MplCanvas(FigureCanvas):
 		self.strain_widget_bend.set_ylim([0, 100])  
 		self.strain_widget_bend.set_xlim([0, 30]) 
 		self.strain_bending_A, = self.strain_widget_bend.plot([0],[0],color = "r",\
-																linestyle = "solid", marker = "o")
+																linestyle = "solid", marker = "o", label = "plane A")
 		self.strain_bending_B, = self.strain_widget_bend.plot([0],[0],color = "b",\
-																linestyle = "-.", marker = "*")
+																linestyle = "-.", marker = "s",\
+																label = "plane B")
 		self.strain_bending_C, = self.strain_widget_bend.plot([0],[0],color = "k",\
-																linestyle = "--", marker = "d")
-		
+																linestyle = "--", marker = "d",\
+																label = "plane C")
+		self.strain_widget_bend.legend()
 		self.is_zeros = True
 		FigureCanvas.__init__(self, self.fig)
 		FigureCanvas.setSizePolicy(self, QSizePolicy.Expanding,QSizePolicy.Expanding)
@@ -145,7 +151,8 @@ class MplCanvas(FigureCanvas):
 		try:
 			array_forces, strain_axial = args
 		except ValueError as e:
-			print(e)
+			#print(e)
+			pass
 		#print(len(self.strain_widget_axial.lines))
 		for _ in range(len(self.strain_widget_axial.lines)):
 			self.strain_widget_axial.lines.remove(self.strain_widget_axial.lines[0])
@@ -158,12 +165,15 @@ class MplCanvas(FigureCanvas):
 		# self.strain_C.set_ydata(strain_axial[:,2])
 		#print(len(self.strain_widget_axial.lines))
 		strain_A, = self.strain_widget_axial.plot(array_forces,strain_axial[:,0],\
-												color = "r",linestyle = "solid", marker = "o")
+												color = "r",linestyle = "solid", marker = "o",\
+												label = "plane A")
 		strain_B, = self.strain_widget_axial.plot(array_forces,strain_axial[:,1],\
-												color = "b",linestyle = "--", marker = "s")
+												color = "b",linestyle = "--", marker = "s",
+												label = "plane B")
 		strain_C, = self.strain_widget_axial.plot(array_forces,strain_axial[:,2],\
-												color = "k",linestyle = "-.", marker = "d")
-		
+												color = "k",linestyle = "-.", marker = "d",\
+												label = "plane C")
+		self.strain_widget_axial.legend()
 		max_y = np.amax(strain_axial)
 		max_x = np.amax(array_forces)
 		min_y = np.amin(strain_axial)
@@ -184,7 +194,8 @@ class MplCanvas(FigureCanvas):
 		try:
 			forces, axial_0strain, axial_180strain, strain_bend, row = args
 		except ValueError as e:
-			print(e)
+			#print(e)
+			pass
 		
 		strain_axial = (axial_0strain + axial_180strain) / 2
 		if self.is_zeros == True:
@@ -202,7 +213,7 @@ class MplCanvas(FigureCanvas):
 		
 		self.strain_bending_C.set_xdata(forces[1:])
 		self.strain_bending_C.set_ydata(self.tzd[:,2] * 100)
-		print(self.tzd)
+		#print(self.tzd)
 		max_y = np.amax(self.tzd)
 		min_y = np.amin(self.tzd)
 		max_x = np.amax(forces)
@@ -224,7 +235,8 @@ class MplCanvas(FigureCanvas):
 			angle_mc, = args
 			#print(angle_mc)
 		except ValueError as e:
-			print(e)
+			#print(e)
+			pass
 		r = np.array(np.arange(0, 1, 0.1))
 		
 		# for line in self.strain_widget_theta.lines:
@@ -240,9 +252,10 @@ class MplCanvas(FigureCanvas):
 		theta_B[:] = angle_mc[1] 
 		theta_C[:] = angle_mc[2] 
 		
-		strain_theta_A, = self.strain_widget_theta.plot(theta_A, r,'ro')
-		strain_theta_B, = self.strain_widget_theta.plot(theta_B, r, 'bs')
-		strain_theta_C, = self.strain_widget_theta.plot(theta_C, r, 'kd')
+		strain_theta_A, = self.strain_widget_theta.plot(theta_A, r,'ro', label = "plane A")
+		strain_theta_B, = self.strain_widget_theta.plot(theta_B, r, 'bs', label = "plane A")
+		strain_theta_C, = self.strain_widget_theta.plot(theta_C, r, 'kd', label = "plane A")
+		#self.strain_widget_theta.legend()
 		# print(self.strain_theta_A)
 		# self.strain_theta_A.set_thetadata(theta_A)
 		# self.strain_theta_A.set_rdata(r)

@@ -44,7 +44,8 @@ class Set_Parameters_Dialog(QDialog, ui_set_parameters.Ui_Dialog):
 				cmd = "".join(["self.",line_edit,".setText(str(",sen,"))"])
 				eval (cmd)
 			except SyntaxError as e:
-				print(e)
+				#print(e)
+				pass
 		
 	def define_varibles(self):
 		for ii in range(12):

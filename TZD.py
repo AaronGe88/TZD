@@ -58,15 +58,16 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 			self.sense = np.loadtxt("sense.txt")
 			self.rcal = np.loadtxt("RCAL.txt")
 		except ValueError as e:
-			#print(e)
 			self.set_parameters(self)
-			
+		except FileNotFoundError as e:
+			msbox = QMessageBox(QMessageBox.Warning,u"警告",str(e), QMessageBox.Cancel);  
+			msbox.exec_()
+			msbox.destroy()
 		
 		
 		try:
 			for ii,f in enumerate(self.read_forces()):
 				self.forces.setItem(ii,0,QStandardItem(f[0]))
-				#self.forces.setItem(ii,1,QStandardItem(f[0]))
 			
 		except TypeError as e:
 			self.forces.setItem(0,0,QStandardItem("0"))
@@ -251,9 +252,9 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 		else:
 			self.textBrowser_info.setText(u"串口已关闭！\n计时器已关闭")
 		if self.index_force == 0.0:
-			self.mean_adcs0 = np.mean(self.cur_adcs,axis = 0) 
 			#print(self.mean_adcs0)
 			try:
+				self.mean_adcs0 = np.mean(self.cur_adcs,axis = 0) 
 				if np.isnan(self.mean_adcs0):
 						#msbox = QMessageBox(QMessageBox.Warning,u"警告",u"", QMessageBox.Cancel);  
 						#msbox.exec_()
@@ -270,9 +271,12 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 						mean_adcs0 = self.mean_adcs0 - self.mean_adcs0_calibrate
 					str_tip = "".join([u"0点设置成功\n",str(mean_adcs0)])
 					self.textBrowser_info.setText(str_tip)
+			except AttributeError as e:
+				#print(e)
+				pass
 		else:
 			try:
-				print(self.strain_0axial is self.strain_180axial, self.strains_0degree is self.strains_180degree)
+				#print(self.strain_0axial is self.strain_180axial, self.strains_0degree is self.strains_180degree)
 				mean_strain = np.mean(self.this_strain,axis = 0)
 				#三个平面的轴向应变
 				aA = np.mean(mean_strain[0:4])
@@ -308,12 +312,13 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 					strain_axial = self.strain_0axial
 				#print(strain_axial.shape)
 			except Exception as e:
-				print (e)
-			
+				#print (e)
+				pass
 			try:
 				self.plot_strain_axial(self.array_forces,strain_axial)
 			except Exception as e:
-				print(e)
+				#print(e)
+				pass
 				
 			try:
 				if self.strain_0axial[self.index_row,0] != 0.0 and\
@@ -332,7 +337,7 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 							b_mc = (b_0 - b_180) / 2
 							#试件分量
 							b_sp = (b_0 + b_180) / 2
-							print(b_mc)
+							#print(b_mc)
 							B_mc_float = np.sqrt(np.sum(b_mc ** 2) / 2)
 							self.strain_bend_mc[self.index_row,ii] = B_mc_float
 							
@@ -351,7 +356,7 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 								theta_2 = (b_mc[3] - b_mc[1]) / \
 									np.fabs(b_mc[3] - b_mc[1]) * \
 									np.arccos(b_mc[2] / B_mc_float) + np.pi
-								print(b_mc[3], B_mc_float)
+								#print(b_mc[3], B_mc_float)
 								theta_3 = (b_mc[0] - b_mc[2]) / \
 									np.fabs(b_mc[0] - b_mc[2]) * \
 									np.arccos(b_mc[3] / B_mc_float) + 1.5 * np.pi
@@ -378,7 +383,8 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 								theta_sp = np.sum([theta_0, theta_1, theta_2, theta_3]) / 4
 								self.strain_theta_sp[self.index_row, ii] = theta_sp
 							except Exception as e:
-								print(e)
+								#print(e)
+								pass
 						else:
 							b_mc = b_0
 							B_mc_float = 0.5 * np.sqrt((b_mc[0] - b_mc[2]) ** 2 +\
@@ -527,7 +533,8 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 			try:
 				out_q.put(hex(ord(b)))
 			except serial.SerialException as e:
-				print(str(e))
+				#print(str(e))
+				pass
 			
 
 	def find_effective_data(self,in_q,out_q2):

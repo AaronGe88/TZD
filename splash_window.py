@@ -6,14 +6,14 @@ from PyQt5.QtWidgets import *
 import sys,time
 class SplashScreen(QSplashScreen):
 	def __init__(self):
-		super(SplashScreen, self).__init__(QPixmap("./source/logo.png"))  #Æô¶¯³ÌĞòµÄÍ¼Æ¬
+		super(SplashScreen, self).__init__(QPixmap("./source/logo.png"))  #å¯åŠ¨ç¨‹åºçš„å›¾ç‰‡
 
-     #Ğ§¹û fade =1 µ­Èë   fade= 2  µ­³ö£¬  t sleep Ê±¼ä ºÁÃë
+     #æ•ˆæœ fade =1 æ·¡å…¥   fade= 2  æ·¡å‡ºï¼Œ  t sleep æ—¶é—´ æ¯«ç§’
 	def effect(self):
 		self.setWindowOpacity(0)
 		t = 0
 		while t <= 50:
-			newOpacity = self.windowOpacity() + 0.02     #ÉèÖÃµ­Èë
+			newOpacity = self.windowOpacity() + 0.02     #è®¾ç½®æ·¡å…¥
 			if newOpacity > 1:
 				break
 			
@@ -25,7 +25,7 @@ class SplashScreen(QSplashScreen):
 		time.sleep(1)
 		t = 0
 		while t <= 50:
-			newOpacity = self.windowOpacity() - 0.02         #ÉèÖÃµ­³ö
+			newOpacity = self.windowOpacity() - 0.02         #è®¾ç½®æ·¡å‡º
 			if newOpacity < 0:
 				break
 			
