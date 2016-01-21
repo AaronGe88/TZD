@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import *
 import sys,time
 class SplashScreen(QSplashScreen):
 	def __init__(self):
-		super(SplashScreen, self).__init__(QPixmap("./source/logo.png"))  #启动程序的图片
+		super(SplashScreen, self).__init__(QPixmap("./source/tongchang_big.png"))  #启动程序的图片
 
      #效果 fade =1 淡入   fade= 2  淡出，  t sleep 时间 毫秒
 	def effect(self):

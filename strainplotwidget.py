@@ -86,6 +86,7 @@ class MplCanvas(FigureCanvas):
 		self.strain_bending_C, = self.strain_widget_bend.plot([0],[0],color = "k",\
 																linestyle = "--", marker = "d",\
 																label = "plane C")
+		
 		self.strain_widget_bend.legend()
 		self.is_zeros = True
 		FigureCanvas.__init__(self, self.fig)
@@ -191,6 +192,9 @@ class MplCanvas(FigureCanvas):
 		self.draw()
 		
 	def show_strain_bending(self,*args):
+		"""
+		u
+		"""
 		try:
 			forces, axial_0strain, axial_180strain, strain_bend, row = args
 		except ValueError as e:
@@ -213,10 +217,18 @@ class MplCanvas(FigureCanvas):
 		
 		self.strain_bending_C.set_xdata(forces[1:])
 		self.strain_bending_C.set_ydata(self.tzd[:,2] * 100)
-		#print(self.tzd)
-		max_y = np.amax(self.tzd)
-		min_y = np.amin(self.tzd)
+		
+		max_y = np.amax(self.tzd) * 100
+		min_y = np.amin(self.tzd) * 100
 		max_x = np.amax(forces)
+		
+		max_in_plane_index = np.argmax(self.tzd,axis = 1)
+		print(max_in_plane_index )
+		colors = np.array(["r", "b", "k"])
+		for ii, (f, b_arg) in enumerate(zip(forces[1:], max_in_plane_index )):
+			b = float(int(self.tzd[ii, b_arg] * 100) / 100)
+			self.strain_widget_bend.text(f,b + 20, str(b * 100),\
+				color = colors[b_arg], fontsize = 10)
 		
 		xliml,xlimu = self.strain_widget_bend.get_xlim()
 		yliml,ylimu = self.strain_widget_bend.get_ylim()

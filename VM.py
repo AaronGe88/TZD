@@ -10,7 +10,7 @@ while index != 0:
 	data.append(12)
 
 	for ii in range(2,38):
-		v = random.randint(0,255)
+		v = random.randint(0,25)
 		data.append(v)
 	n = 0
 	for ii in range(1,38):
@@ -29,7 +29,7 @@ while index != 0:
 	data.append(255)
 	print(data)
 	byte_data = bytearray(data)
-	ser.write(byte_data)
+	ser.write(byte_data )
 	index -= 1
 	print (index)
 ser.close()
