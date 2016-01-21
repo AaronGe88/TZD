@@ -440,7 +440,7 @@ class TZDUIWIDGET (QMainWindow, ui_TZD.Ui_Form):
 				#print(self.mean_adcs0)
 				#print(self.all_adcs_minused.shape)
 				if self.sense.size == 12 and self.rcal.size ==12 :
-					self.this_strain = cur_adcs_minused / -self.rcal / self.sense
+					self.this_strain = cur_adcs_minused / self.rcal / self.sense
 					self.plot_strains(self.this_strain)
 			except ValueError as e:
 				#msbox = QMessageBox(QMessageBox.Warning,u"警告",u"串口无信号/t请结束测量检测串口", QMessageBox.Cancel);  
